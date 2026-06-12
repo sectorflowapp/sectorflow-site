@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
 :root {
   --ink: #111827;
@@ -522,13 +523,17 @@ a:focus-visible {
   height: 1px;
   overflow: hidden;
 }
-.turnstile-placeholder {
-  border: 1px dashed #aab4c3;
-  border-radius: 6px;
-  padding: 0.85rem;
+.turnstile-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  margin: 0.25rem 0 1rem;
+}
+.turnstile-note {
+  margin: 0.65rem 0 0;
   color: var(--muted);
   font-size: 0.9rem;
-  margin-bottom: 1rem;
+  line-height: 1.5;
 }
 .site-footer {
   background: var(--navy);
@@ -820,13 +825,12 @@ a:focus-visible {
           <span class="error" id="message-error" aria-live="polite"></span>
         </div>
 
-        <!-- Cloudflare Turnstile placeholder:
-             1. Add the Turnstile script after keys are issued:
-                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-             2. Replace this placeholder with:
-                <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY"></div>
-             3. If a server endpoint is added later, validate the Turnstile response token server-side before forwarding support mail. -->
-        <div class="turnstile-placeholder" aria-label="Cloudflare Turnstile setup note">Spam protection is prepared for Cloudflare Turnstile configuration.</div>
+        <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response" value="">
+        <!-- TODO: Turnstile client widget added. Server-side verification is still required before trusting submissions. Verify cf-turnstile-response using Cloudflare Siteverify from a backend, Cloudflare Worker, Cloudflare Pages Function, or trusted form provider. Do not expose the secret key in public files. -->
+        <div class="turnstile-wrap">
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAADjMFqv-Q5ulBH06" data-callback="handleTurnstileSuccess" data-expired-callback="handleTurnstileExpired"></div>
+          <p class="turnstile-note">Complete the verification before sending your support request.</p>
+        </div>
 
         <button class="button button-primary" type="submit">Prepare Support Request</button>
         <div class="status" id="form-status" role="status" aria-live="polite" hidden></div>
@@ -852,6 +856,7 @@ a:focus-visible {
 <script>
 const form = document.querySelector("#support-form");
 const statusEl = document.querySelector("#form-status");
+const turnstileTokenInput = document.querySelector("#cf-turnstile-response");
 const supportAddressParts = [
   [115,117,112,112,111,114,116],
   [115,101,99,116,111,114,102,108,111,119,97,112,112,46,99,111,109]
@@ -892,6 +897,15 @@ function setStatus(message, type) {
   statusEl.className = `status ${type}`;
 }
 
+window.handleTurnstileSuccess = function(token) {
+  turnstileTokenInput.value = token || "";
+  turnstileTokenInput.setAttribute("aria-invalid", "false");
+};
+
+window.handleTurnstileExpired = function() {
+  turnstileTokenInput.value = "";
+};
+
 function validateForm() {
   let firstInvalid = null;
   Object.values(fields).forEach(({ input, error, validate }) => {
@@ -914,6 +928,7 @@ Object.values(fields).forEach(({ input, error, validate }) => {
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   statusEl.hidden = true;
+  statusEl.className = "status";
 
   if (document.querySelector("#company").value.trim()) {
     setStatus("Your request could not be submitted.", "error-state");
@@ -927,10 +942,15 @@ form.addEventListener("submit", (event) => {
     return;
   }
 
+  if (!turnstileTokenInput.value.trim()) {
+    setStatus("Please complete the Turnstile verification before sending.", "error-state");
+    return;
+  }
+
   const address = `${supportAddressParts[0]}@${supportAddressParts[1]}`;
   const subject = encodeURIComponent("SectorFlow support request");
   const body = encodeURIComponent(
-    `Name: ${fields.name.input.value.trim()}\nEmail: ${fields.email.input.value.trim()}\n\nMessage:\n${fields.message.input.value.trim()}`
+    `Name: ${fields.name.input.value.trim()}\nEmail: ${fields.email.input.value.trim()}\ncf-turnstile-response: ${turnstileTokenInput.value.trim()}\n\nMessage:\n${fields.message.input.value.trim()}`
   );
   window.location.href = `mailto:${address}?subject=${subject}&body=${body}`;
   setStatus("Your support request is ready in your email app. Please send it to complete the request.", "success");
