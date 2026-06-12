@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SectorFlow is an iOS pilot utility app for time calculations, crew rest planning, time zones, and in-flight prayer time support.">
+<title>SectorFlow | iOS Pilot Utility App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #111827;
+  --muted: #596579;
+  --line: #d9dee7;
+  --paper: #f7f8fb;
+  --white: #ffffff;
+  --navy: #0b1424;
+  --navy-2: #111f35;
+  --gold: #c9a84c;
+  --blue: #2563eb;
+  --green: #0f766e;
+  --red: #b42318;
+  --shadow: 0 24px 70px rgba(17, 24, 39, 0.16);
+  --font: "Space Grotesk", sans-serif;
+  --mono: "Space Mono", monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 1000;
+  background: var(--gold);
+  color: var(--navy);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.skip-link:focus { top: 1rem; }
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(11, 20, 36, 0.92);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav {
+  max-width: 1180px;
+  margin: 0 auto;
+  min-height: 68px;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.brand {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+}
+.brand span { color: var(--gold); }
+.nav-links {
+  display: flex;
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-links a,
+.footer-links a {
+  color: rgba(255,255,255,0.76);
+  text-decoration: none;
+  font-size: 0.94rem;
+}
+.nav-links a:hover,
+.nav-links a:focus-visible,
+.footer-links a:hover,
+.footer-links a:focus-visible { color: #fff; }
+.nav-cta {
+  background: var(--gold);
+  color: var(--navy);
+  border-radius: 6px;
+  padding: 0.72rem 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.hero {
+  color: #fff;
+  overflow: hidden;
+  background:
+    linear-gradient(120deg, rgba(11,20,36,0.96), rgba(11,20,36,0.78)),
+    url("assets/crew-rest-planner.png") center 18% / cover no-repeat;
+}
+.hero-inner {
+  width: 100%;
+  max-width: 1180px;
+  min-height: min(820px, calc(100vh - 68px));
+  margin: 0 auto;
+  padding: 7rem 1.25rem 5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+}
+.hero-copy { max-width: 790px; min-width: 0; }
+h1 {
+  margin: 0;
+  font-size: clamp(2.7rem, 6vw, 5.6rem);
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+.hero-title-line { display: inline; }
+.hero-lede {
+  margin: 1.35rem 0 0;
+  max-width: 660px;
+  color: rgba(238,243,255,0.82);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  padding: 0.82rem 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.96rem;
+}
+.button-primary {
+  background: var(--gold);
+  color: var(--navy);
+}
+.button-secondary {
+  border-color: rgba(255,255,255,0.28);
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+}
+.hero-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 4.5rem;
+  max-width: 780px;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.16);
+  min-width: 0;
+}
+.proof-item {
+  background: rgba(11,20,36,0.72);
+  padding: 1rem;
+  min-width: 0;
+}
+.proof-item strong {
+  display: block;
+  color: #fff;
+  font-size: 0.95rem;
+}
+.proof-item span {
+  display: block;
+  color: rgba(238,243,255,0.68);
+  font-size: 0.86rem;
+  margin-top: 0.25rem;
+}
+.section {
+  padding: 5.5rem 1.25rem;
+}
+.section-dark {
+  background: var(--navy);
+  color: #fff;
+}
+.inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.section-head {
+  max-width: 720px;
+  margin-bottom: 2.25rem;
+}
+h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+.section-head p,
+.feature-copy p,
+.trust-card p,
+.future-card p,
+.support-copy p {
+  color: var(--muted);
+  margin: 0.85rem 0 0;
+}
+.section-dark .section-head p,
+.section-dark .trust-card p { color: rgba(238,243,255,0.72); }
+.feature-list {
+  display: grid;
+  gap: 4rem;
+}
+.feature {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 3rem;
+  align-items: center;
+}
+.feature:nth-child(even) .feature-media { order: 2; }
+.feature-media {
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+}
+.phone-frame {
+  width: min(100%, 330px);
+  margin: 0 auto;
+  border-radius: 34px;
+  border: 8px solid #171923;
+  overflow: hidden;
+  background: #171923;
+}
+.phone-frame img { border-radius: 25px; }
+.feature-kicker,
+.future-label,
+.legal-label {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--blue);
+  font-weight: 700;
+}
+.feature-copy h3,
+.future-card h3,
+.trust-card h3 {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.45rem, 3vw, 2.15rem);
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+.feature-points {
+  margin: 1.2rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+.feature-points li {
+  color: var(--muted);
+  padding-left: 1.4rem;
+  position: relative;
+}
+.feature-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--blue);
+}
+.module-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  background: var(--white);
+}
+.module-strip div {
+  padding: 1rem;
+  border-left: 1px solid var(--line);
+  min-height: 92px;
+}
+.module-strip div:first-child { border-left: 0; }
+.module-strip strong {
+  display: block;
+  font-size: 0.96rem;
+}
+.module-strip span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.84rem;
+  margin-top: 0.28rem;
+}
+.future-grid,
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+.future-card,
+.trust-card {
+  border: 1px solid var(--line);
+  background: var(--white);
+  padding: 1.35rem;
+  border-radius: 8px;
+}
+.trust-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.12);
+}
+.trust-card h3 { font-size: 1.15rem; }
+.support-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 3rem;
+  align-items: start;
+}
+.support-copy ul {
+  margin: 1.25rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+}
+.form-panel {
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  border-radius: 8px;
+}
+.field {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+label {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+input,
+textarea {
+  width: 100%;
+  border: 1px solid #c8d0dc;
+  border-radius: 6px;
+  padding: 0.85rem;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+input:focus,
+textarea:focus,
+.button:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(37,99,235,0.28);
+  outline-offset: 2px;
+}
+.error {
+  color: var(--red);
+  font-size: 0.88rem;
+  min-height: 1.25rem;
+}
+.status {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-weight: 700;
+}
+.status[hidden] { display: none; }
+.status.success {
+  color: #065f46;
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+.status.error-state {
+  color: var(--red);
+  background: #fff1f0;
+  border-color: #fecdca;
+}
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.turnstile-placeholder {
+  border: 1px dashed #aab4c3;
+  border-radius: 6px;
+  padding: 0.85rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.site-footer {
+  background: var(--navy);
+  color: #fff;
+  padding: 2rem 1.25rem;
+}
+.footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.footer-note {
+  color: rgba(255,255,255,0.62);
+  font-size: 0.88rem;
+  margin: 0.35rem 0 0;
+}
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .feature,
+  .support-grid {
+    grid-template-columns: 1fr;
+  }
+  .feature:nth-child(even) .feature-media { order: 0; }
+  .module-strip,
+  .future-grid,
+  .trust-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero-proof { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .nav { min-height: 62px; }
+  .nav-cta { display: none; }
+  .hero {
+    background:
+      linear-gradient(180deg, rgba(11,20,36,0.94), rgba(11,20,36,0.82)),
+      url("assets/crew-rest-planner.png") 45% top / auto 100% no-repeat;
+  }
+  .hero-inner {
+    min-height: auto;
+    padding: 4.75rem 1rem 3rem;
+  }
+  .hero-copy,
+  .hero-actions,
+  .hero-proof {
+    width: min(100%, 342px);
+    max-width: 342px;
+  }
+  h1 {
+    max-width: 342px;
+    font-size: clamp(2rem, 9vw, 2.35rem);
+    line-height: 1.08;
+  }
+  .hero-title-line { display: block; }
+  .hero-lede {
+    max-width: 100%;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  .hero-actions { gap: 0.7rem; }
+  .button { flex: 1 1 100%; }
+  .hero-proof { margin-top: 2.6rem; }
+  .proof-item { padding: 0.95rem 1rem; }
+  .section { padding: 4rem 1rem; }
+  .module-strip,
+  .future-grid,
+  .trust-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="brand" href="index.html" aria-label="SectorFlow home">Sector<span>Flow</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#future">Future</a></li>
+      <li><a href="#trust">Trust</a></li>
+      <li><a href="#support">Support</a></li>
+    </ul>
+    <a class="nav-cta" href="#support">Contact Support</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <h1 id="hero-title"><span class="hero-title-line">Pilot tools</span> <span class="hero-title-line">for clearer</span> <span class="hero-title-line">time decisions.</span></h1>
+        <p class="hero-lede">SectorFlow brings practical iOS utilities for UTC calculations, time zones, crew rest planning, and in-flight prayer time support into one focused cockpit-ready workspace.</p>
+        <div class="hero-actions" aria-label="Primary actions">
+          <a class="button button-primary" href="#features">Explore Current Features</a>
+          <a class="button button-secondary" href="#support">Get Support</a>
+        </div>
+      </div>
+      <div class="hero-proof" aria-label="SectorFlow trust signals">
+        <div class="proof-item"><strong>Designed for pilots</strong><span>Built around practical preflight and in-flight workflows.</span></div>
+        <div class="proof-item"><strong>Privacy-focused</strong><span>No accounts, ads, profiling, or cross-app tracking in current releases.</span></div>
+        <div class="proof-item"><strong>Supportive tools</strong><span>Outputs are designed to be reviewed by the user.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="section" aria-labelledby="features-title">
+    <div class="inner">
+      <div class="section-head">
+        <h2 id="features-title">Current iOS modules</h2>
+        <p>SectorFlow focuses on small, dependable utilities that reduce friction without replacing operational judgment, airline procedures, dispatch instructions, manuals, or approved planning systems.</p>
+      </div>
+      <div class="module-strip" aria-label="Current SectorFlow modules">
+        <div><strong>Time Calculator</strong><span>Add, subtract, and compare flight time values.</span></div>
+        <div><strong>Clock Calculator</strong><span>Work quickly with clock-time offsets and durations.</span></div>
+        <div><strong>Time Zone Calculator</strong><span>Translate time references across zones.</span></div>
+        <div><strong>Crew Rest Planner</strong><span>Structure rest windows for review and planning.</span></div>
+        <div><strong>In-Flight Prayer Times</strong><span>Estimate prayer timing support during flight.</span></div>
+      </div>
+
+      <div class="feature-list" style="margin-top:4rem">
+        <article class="feature">
+          <div class="feature-media">
+            <div class="phone-frame"><img src="assets/time-calculator.png" alt="SectorFlow time calculator screen"></div>
+          </div>
+          <div class="feature-copy">
+            <p class="feature-kicker">Time Tools</p>
+            <h3>Fast calculations without spreadsheet thinking.</h3>
+            <p>Time Calculator, Clock Calculator, and Time Zone Calculator are built for quick checks when minutes, UTC references, and local conversions need to stay clear.</p>
+            <ul class="feature-points">
+              <li>Designed for repeated aviation time workflows.</li>
+              <li>Clear inputs and reviewable outputs.</li>
+              <li>Useful for planning support, briefing preparation, and personal cross-checks.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="feature">
+          <div class="feature-media">
+            <div class="phone-frame"><img src="assets/crew-rest-planner.png" alt="SectorFlow crew rest planner screen"></div>
+          </div>
+          <div class="feature-copy">
+            <p class="feature-kicker">Crew Rest</p>
+            <h3>Rest planning that stays readable.</h3>
+            <p>Crew Rest Planner helps organize rest opportunities in a simple workflow so pilots can review timing, sequence, and assumptions with less mental overhead.</p>
+            <ul class="feature-points">
+              <li>Supports practical rest-window planning.</li>
+              <li>Keeps outputs understandable and easy to verify.</li>
+              <li>Does not replace airline procedures or approved fatigue guidance.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="feature">
+          <div class="feature-media">
+            <div class="phone-frame"><img src="assets/in-flight-prayer-times.png" alt="SectorFlow in-flight prayer times screen"></div>
+          </div>
+          <div class="feature-copy">
+            <p class="feature-kicker">Prayer Time Support</p>
+            <h3>In-flight prayer time estimates for review.</h3>
+            <p>In-Flight Prayer Times supports pilots who need timing awareness while moving across routes and time zones, with outputs intended for personal review.</p>
+            <ul class="feature-points">
+              <li>Designed for mobile aviation contexts.</li>
+              <li>Keeps timing information structured and readable.</li>
+              <li>Supports personal planning without making operational decisions.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="future" class="section" aria-labelledby="future-title">
+    <div class="inner">
+      <div class="section-head">
+        <h2 id="future-title">Future features</h2>
+        <p>SectorFlow may introduce briefing and route intelligence modules in future versions. These are planned concepts, not currently available app features.</p>
+      </div>
+      <div class="future-grid">
+        <article class="future-card"><p class="future-label">Coming Soon</p><h3>Flight Briefing AI</h3><p>Planned support for briefing review workflows with user-reviewed outputs.</p></article>
+        <article class="future-card"><p class="future-label">Planned</p><h3>OFP Analysis</h3><p>Future analysis tools may help organize operational flight plan information.</p></article>
+        <article class="future-card"><p class="future-label">Planned</p><h3>Route Analysis</h3><p>Future versions may provide route-focused summaries and planning support.</p></article>
+        <article class="future-card"><p class="future-label">Planned</p><h3>NOTAM Intelligence</h3><p>Future tools may help pilots review NOTAM information more efficiently.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="trust" class="section section-dark" aria-labelledby="trust-title">
+    <div class="inner">
+      <div class="section-head">
+        <h2 id="trust-title">Built for trust, not autopilot.</h2>
+        <p>SectorFlow is an informational and workflow-support tool. It is designed to help pilots organize calculations and review outputs, not to make decisions for them.</p>
+      </div>
+      <div class="trust-grid">
+        <article class="trust-card"><h3>Designed for pilots</h3><p>Focused utilities for recurring aviation time and planning workflows.</p></article>
+        <article class="trust-card"><h3>Privacy-focused</h3><p>No current accounts, ads, marketing trackers, user profiling, or sale of personal information.</p></article>
+        <article class="trust-card"><h3>Simple workflow tools</h3><p>Clear inputs, clear outputs, and lightweight static web support.</p></article>
+        <article class="trust-card"><h3>User-reviewed outputs</h3><p>Every result remains subject to pilot judgment, SOPs, manuals, dispatch, and regulatory requirements.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="support" class="section" aria-labelledby="support-title">
+    <div class="inner support-grid">
+      <div class="support-copy">
+        <h2 id="support-title">Support</h2>
+        <p>Questions, issue reports, and App Store support requests can be sent using the form below. Please avoid including sensitive operational, passenger, or company-confidential information.</p>
+        <ul>
+          <li>Include your device model and iOS version when reporting an issue.</li>
+          <li>Describe the module involved and what you expected to happen.</li>
+          <li>Do not submit operationally sensitive flight details.</li>
+        </ul>
+      </div>
+
+      <form class="form-panel" id="support-form" novalidate aria-describedby="support-form-help">
+        <p id="support-form-help" class="support-copy" style="margin-top:0;color:var(--muted)">Contact support using the form below.</p>
+        <div class="hp-field" aria-hidden="true">
+          <label for="company">Company</label>
+          <input id="company" name="company" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-error">
+          <span class="error" id="name-error" aria-live="polite"></span>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error">
+          <span class="error" id="email-error" aria-live="polite"></span>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required minlength="30" aria-describedby="message-error"></textarea>
+          <span class="error" id="message-error" aria-live="polite"></span>
+        </div>
+
+        <!-- Cloudflare Turnstile placeholder:
+             1. Add the Turnstile script after keys are issued:
+                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+             2. Replace this placeholder with:
+                <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY"></div>
+             3. If a server endpoint is added later, validate the Turnstile response token server-side before forwarding support mail. -->
+        <div class="turnstile-placeholder" aria-label="Cloudflare Turnstile setup note">Spam protection is prepared for Cloudflare Turnstile configuration.</div>
+
+        <button class="button button-primary" type="submit">Prepare Support Request</button>
+        <div class="status" id="form-status" role="status" aria-live="polite" hidden></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <a class="brand" href="index.html" aria-label="SectorFlow home">Sector<span>Flow</span></a>
+      <p class="footer-note">iOS pilot utility tools. Informational support only.</p>
+    </div>
+    <ul class="footer-links" aria-label="Footer navigation">
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="terms.html">Terms of Use</a></li>
+      <li><a href="#support">Support</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+const form = document.querySelector("#support-form");
+const statusEl = document.querySelector("#form-status");
+const supportAddressParts = [
+  [115,117,112,112,111,114,116],
+  [115,101,99,116,111,114,102,108,111,119,97,112,112,46,99,111,109]
+].map((part) => String.fromCharCode(...part));
+
+const fields = {
+  name: {
+    input: document.querySelector("#name"),
+    error: document.querySelector("#name-error"),
+    validate(value) {
+      if (value.trim().length < 2) return "Enter your name.";
+      if (value.trim().length > 80) return "Name must be 80 characters or fewer.";
+      return "";
+    }
+  },
+  email: {
+    input: document.querySelector("#email"),
+    error: document.querySelector("#email-error"),
+    validate(value) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) return "Enter a valid email address.";
+      return "";
+    }
+  },
+  message: {
+    input: document.querySelector("#message"),
+    error: document.querySelector("#message-error"),
+    validate(value) {
+      if (value.trim().length < 30) return "Message must be at least 30 characters.";
+      if (value.trim().length > 3000) return "Message must be 3000 characters or fewer.";
+      return "";
+    }
+  }
+};
+
+function setStatus(message, type) {
+  statusEl.hidden = false;
+  statusEl.textContent = message;
+  statusEl.className = `status ${type}`;
+}
+
+function validateForm() {
+  let firstInvalid = null;
+  Object.values(fields).forEach(({ input, error, validate }) => {
+    const message = validate(input.value);
+    error.textContent = message;
+    input.setAttribute("aria-invalid", message ? "true" : "false");
+    if (message && !firstInvalid) firstInvalid = input;
+  });
+  return firstInvalid;
+}
+
+Object.values(fields).forEach(({ input, error, validate }) => {
+  input.addEventListener("input", () => {
+    const message = validate(input.value);
+    error.textContent = message;
+    input.setAttribute("aria-invalid", message ? "true" : "false");
+  });
+});
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  statusEl.hidden = true;
+
+  if (document.querySelector("#company").value.trim()) {
+    setStatus("Your request could not be submitted.", "error-state");
+    return;
+  }
+
+  const firstInvalid = validateForm();
+  if (firstInvalid) {
+    firstInvalid.focus();
+    setStatus("Please correct the highlighted fields.", "error-state");
+    return;
+  }
+
+  const address = `${supportAddressParts[0]}@${supportAddressParts[1]}`;
+  const subject = encodeURIComponent("SectorFlow support request");
+  const body = encodeURIComponent(
+    `Name: ${fields.name.input.value.trim()}\nEmail: ${fields.email.input.value.trim()}\n\nMessage:\n${fields.message.input.value.trim()}`
+  );
+  window.location.href = `mailto:${address}?subject=${subject}&body=${body}`;
+  setStatus("Your support request is ready in your email app. Please send it to complete the request.", "success");
+});
+</script>
+</body>
+</html>
