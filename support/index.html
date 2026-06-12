@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Contact SectorFlow support for app issues, privacy questions, billing questions, and feature feedback.">
+<title>Support | SectorFlow</title>
+<link rel="icon" href="../assets/images/favicon.png">
+<link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/styles.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="../assets/js/main.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <nav class="nav-shell" aria-label="Primary navigation">
+    <a class="brand" href="../" aria-label="SectorFlow home"><img src="../assets/images/sectorflow-icon.png" alt="" width="36" height="36"><span>Sector<span>Flow</span></span></a>
+    <ul class="nav-links"><li><a href="../">Home</a></li><li><a href="../features/">Features</a></li><li><a href="../privacy/">Privacy</a></li><li><a href="../terms/">Terms</a></li><li><a href="./">Support</a></li></ul>
+  </nav>
+</header>
+<main id="main">
+  <section class="page-hero">
+    <div class="section-inner">
+      <h1>SectorFlow Support</h1>
+      <p class="page-copy">Use the form below for app issues, feature feedback, privacy questions, billing questions, or other support requests.</p>
+    </div>
+  </section>
+
+  <section class="section section-tight">
+    <div class="section-inner support-layout">
+      <div class="support-notes">
+        <div class="note-card">
+          <strong>Keep sensitive data out of support messages.</strong>
+          <p>Please do not include passenger data, employee numbers, company-confidential material, full OFPs, or operationally sensitive flight information.</p>
+        </div>
+        <div class="note-card">
+          <strong>Operational advice is outside support scope.</strong>
+          <p>SectorFlow support cannot provide operational advice or verify flight-specific decisions.</p>
+        </div>
+      </div>
+
+      <form class="support-panel form-grid" data-support-form data-endpoint-configured="false" novalidate>
+        <h2>Contact support</h2>
+        <p class="help">A private backend or trusted form endpoint is required before live submissions can be delivered without exposing the support destination.</p>
+        <div class="hidden-field" aria-hidden="true">
+          <label for="website">Website</label>
+          <input id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="company">Company <span class="help">(optional)</span></label>
+          <input id="company" name="company" type="text" autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-error">
+          <span class="error" id="name-error" data-error-for="name" aria-live="polite"></span>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error">
+          <span class="error" id="email-error" data-error-for="email" aria-live="polite"></span>
+        </div>
+        <div class="field">
+          <label for="topic">Topic</label>
+          <select id="topic" name="topic" required aria-describedby="topic-error">
+            <option value="">Choose a topic</option>
+            <option value="App issue">App issue</option>
+            <option value="Feature feedback">Feature feedback</option>
+            <option value="Privacy question">Privacy question</option>
+            <option value="Billing/subscription question">Billing/subscription question</option>
+            <option value="Other">Other</option>
+          </select>
+          <span class="error" id="topic-error" data-error-for="topic" aria-live="polite"></span>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required minlength="30" aria-describedby="message-help message-error"></textarea>
+          <span class="help" id="message-help">Please include your device model, iOS version, and the module involved when reporting an issue.</span>
+          <span class="error" id="message-error" data-error-for="message" aria-live="polite"></span>
+        </div>
+        <input type="hidden" name="cf-turnstile-response" id="cf-turnstile-response" value="">
+        <!-- TODO: Turnstile client widget added. Server-side verification is still required before trusting submissions. Verify cf-turnstile-response using Cloudflare Siteverify from a backend, Cloudflare Worker, Cloudflare Pages Function, or trusted form provider. Do not expose the secret key in public files. -->
+        <div class="turnstile-wrap">
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAADjMFqv-Q5ulBH06" data-callback="handleTurnstileSuccess" data-expired-callback="handleTurnstileExpired"></div>
+        </div>
+        <button class="button button-primary" type="submit">Send Support Request</button>
+        <div class="status" data-form-status role="status" aria-live="polite" hidden></div>
+      </form>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><a class="brand" href="../" aria-label="SectorFlow home"><img src="../assets/images/sectorflow-icon.png" alt="" width="36" height="36"><span>Sector<span>Flow</span></span></a><p class="footer-copy">SectorFlow — iOS pilot utility tools. Informational support only.</p></div>
+    <ul class="footer-links" aria-label="Footer navigation"><li><a href="../privacy/">Privacy Policy</a></li><li><a href="../terms/">Terms of Use</a></li><li><a href="./">Support</a></li></ul>
+  </div>
+</footer>
+</body>
+</html>

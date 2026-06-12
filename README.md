@@ -10,12 +10,14 @@ Static GitHub Pages website for SectorFlow.
 
 ## Support Form
 
-The support form validates name, email, and message fields in the browser and includes a hidden honeypot field. It currently prepares a support request through the user's email app because no server-side form endpoint is configured yet.
+The support form validates company, name, email, topic, and message fields in the browser. It also includes a hidden honeypot field and the Cloudflare Turnstile client widget.
+
+Live delivery is intentionally not handled in public client-side code. Configure the support destination privately in a Cloudflare Worker, Cloudflare Pages Function, or trusted form provider. Do not place the destination address, Turnstile secret key, mail API keys, or provider secrets in public HTML, JavaScript, comments, logs, or repository files.
 
 ## Cloudflare Turnstile
 
-`index.html` includes a Turnstile implementation placeholder near the support form. To complete setup:
+The public Turnstile site key is included on the support page. Server-side verification is still required before trusting submissions:
 
-- Add the Cloudflare Turnstile script after keys are issued.
-- Replace the placeholder with the real Turnstile site key.
-- If a server endpoint is added later, validate Turnstile response tokens server-side before forwarding support requests.
+- Verify `cf-turnstile-response` with Cloudflare Siteverify from a private backend or trusted form provider.
+- Store the Turnstile secret key only in private environment variables or provider-managed secrets.
+- Forward verified support requests from the private endpoint to the configured support destination.
