@@ -572,7 +572,7 @@ supportForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (CONTACT_WORKER_ENDPOINT === "REPLACE_WITH_CLOUDFLARE_WORKER_URL") {
+  if (CONTACT_WORKER_ENDPOINT === "https://contact.sectorflowapp.com") {
     setFormStatus("Support form endpoint is not configured yet.", "error");
     return;
   }
