@@ -498,7 +498,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(201,168,76,0.08); p
 </footer>
 
 <script>
-const CONTACT_WORKER_ENDPOINT = "REPLACE_WITH_CLOUDFLARE_WORKER_URL";
+const CONTACT_WORKER_ENDPOINT = "https://contact.sectorflowapp.com";
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } });
 }, { threshold: 0.08 });
@@ -519,6 +519,13 @@ function setFormStatus(message, type) {
   statusEl.hidden = false;
   statusEl.textContent = message;
   statusEl.className = `form-status ${type}`;
+}
+
+function getWorkerErrorMessage(data) {
+  if (!data || typeof data !== "object") return "";
+  if (typeof data.error !== "string") return "";
+  const message = data.error.trim();
+  return message ? `We could not send your message. ${message}` : "";
 }
 
 function setFieldError(key, message) {
@@ -572,7 +579,7 @@ supportForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (CONTACT_WORKER_ENDPOINT === "https://contact.sectorflowapp.com") {
+  if (CONTACT_WORKER_ENDPOINT === "REPLACE_WITH_CLOUDFLARE_WORKER_URL") {
     setFormStatus("Support form endpoint is not configured yet.", "error");
     return;
   }
@@ -588,13 +595,25 @@ supportForm.addEventListener("submit", async (event) => {
       body: JSON.stringify({ ...values, turnstileToken })
     });
 
-    if (!response.ok) throw new Error("Support request failed");
+    if (!response.ok) {
+      let workerMessage = "";
+      try {
+        const responseData = await response.json();
+        workerMessage = getWorkerErrorMessage(responseData);
+      } catch {
+        workerMessage = "";
+      }
+      throw new Error(workerMessage || "We could not send your message. Please try again in a moment.");
+    }
 
     supportForm.reset();
     if (window.turnstile) window.turnstile.reset();
     setFormStatus("Thanks. Your message was sent successfully.", "success");
-  } catch {
-    setFormStatus("We could not send your message. Please try again in a moment.", "error");
+  } catch (error) {
+    const message = error instanceof Error && error.message
+      ? error.message
+      : "We could not send your message. Please try again in a moment.";
+    setFormStatus(message, "error");
   } finally {
     isSubmitting = false;
     submitButton.disabled = false;
