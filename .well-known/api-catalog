@@ -1,18 +1,6 @@
 {
-  "linkset": [
-    {
-      "anchor": "https://contact.sectorflowapp.com",
-      "service-doc": [
-        {
-          "href": "https://sectorflowapp.com/support.html",
-          "type": "text/html"
-        }
-      ],
-      "status": [
-        {
-          "href": "https://sectorflowapp.com/"
-        }
-      ]
-    }
-  ]
+  "version": "1.0",
+  "name": "SectorFlow",
+  "description": "Pilot utilities for time calculations, crew rest planning, prayer times and future flight briefing tools.",
+  "url": "https://sectorflowapp.com"
 }
