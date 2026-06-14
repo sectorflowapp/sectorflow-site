@@ -1,0 +1,18 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://contact.sectorflowapp.com",
+      "service-doc": [
+        {
+          "href": "https://sectorflowapp.com/support.html",
+          "type": "text/html"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://sectorflowapp.com/"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://sectorflowapp.com/.well-known/agent-skills/schema.json",
+  "skills": [
+    {
+      "name": "sectorflow-site",
+      "type": "public-information",
+      "description": "Read and summarize public SectorFlow website information, including app feature descriptions, support information, privacy policy, and terms.",
+      "url": "https://sectorflowapp.com/.well-known/agent-skills/sectorflow-site/SKILL.md",
+      "sha256": "7080656782b7eae37d2c073879fa4cce2b21cd335a4b1675e58660f52b5e9d5b"
+    }
+  ]
+}

@@ -8,7 +8,13 @@ Landing page, support form, privacy policy, and terms page for [SectorFlow](http
 sectorflow-website/
 ├── index.html                        # Main landing page
 ├── privacy.html                      # Privacy policy (linked from App Store)
+├── support.html                      # Public support information
 ├── terms.html                        # Terms of Use
+├── .well-known/
+│   ├── api-catalog                   # Honest RFC 9727-style API catalog
+│   └── agent-skills/
+│       ├── index.json                # Public agent-readable skills index
+│       └── sectorflow-site/SKILL.md  # Public informational site skill
 ├── CNAME                             # GitHub Pages custom domain
 ├── robots.txt                        # Search engine crawl rules
 ├── sitemap.xml                       # Public page sitemap
@@ -30,7 +36,10 @@ sectorflow-website/
 |---|---|
 | `index.html` | Full landing page — Hero, Features, Coming Soon, Security, Contact |
 | `privacy.html` | Privacy policy page — suitable for linking from the App Store listing |
+| `support.html` | Public support information linking to the secure homepage support form |
 | `terms.html` | Terms of Use page |
+| `.well-known/api-catalog` | Static API catalog pointing only to the deployed contact Worker endpoint and support documentation |
+| `.well-known/agent-skills/index.json` | Agent-readable index of public website information skills |
 | `robots.txt` | Crawl permissions and sitemap location |
 | `sitemap.xml` | Canonical sitemap for existing static pages |
 
@@ -40,14 +49,33 @@ This site is static HTML — no build step required. To go live:
 
 The root `CNAME` file must contain only `sectorflowapp.com`.
 
-The support form is wired to a Cloudflare Worker endpoint placeholder. Before publishing, replace `CONTACT_WORKER_ENDPOINT` in `index.html` with the deployed Worker URL and configure the Worker to verify Cloudflare Turnstile server-side.
+The support form is wired to `https://contact.sectorflowapp.com`. If the deployed Worker URL changes, update `CONTACT_WORKER_ENDPOINT` in `index.html` and the `.well-known/api-catalog` anchor together. The Worker should verify Cloudflare Turnstile server-side.
 
 The website may use Cloudflare Web Analytics, Turnstile, security, and performance services. The iPhone app is described separately from the website in the privacy policy.
+
+## Agent readiness notes
+
+The `.well-known` files intentionally describe only truthful public website capabilities. They do not advertise private app functionality, protected actions, or developer integrations.
+
+The following isitagentready.com items are intentionally not implemented because SectorFlow does not currently expose those capabilities:
+
+- OAuth/OIDC discovery
+- OAuth Protected Resource Metadata
+- `auth.md`
+- MCP Server Card
+- WebMCP
+- DNS-AID
+
+Recommended Cloudflare configuration:
+
+- Add a Response Header Transform Rule for HTML pages:
+  `Link: </.well-known/api-catalog>; rel="api-catalog", </support.html>; rel="help", </privacy.html>; rel="privacy-policy"`
+- Enable Markdown for Agents in Cloudflare if available for the zone.
 
 ## To update
 
 - **App Store link**: Replace the temporary `#contact` CTA links in `index.html` with the real App Store URL when available
-- **Support endpoint**: Replace `REPLACE_WITH_CLOUDFLARE_WORKER_URL` in `index.html` with the Cloudflare Worker URL
+- **Support endpoint**: Update `CONTACT_WORKER_ENDPOINT` in `index.html` and the `.well-known/api-catalog` anchor if the deployed Cloudflare Worker URL changes
 - **Logo**: Replace `assets/screenshots/Logo.png` only if the official logo asset changes
 - **Screenshots**: Replace files in `assets/screenshots/` — filenames must match exactly
 - **Privacy policy date**: Update the Last updated date in `privacy.html` when making material changes
