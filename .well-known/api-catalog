@@ -1,6 +1,29 @@
 {
-  "version": "1.0",
-  "name": "SectorFlow",
-  "description": "Pilot utilities for time calculations, crew rest planning, prayer times and future flight briefing tools.",
-  "url": "https://sectorflowapp.com"
+  "linkset": [
+    {
+      "anchor": "https://sectorflowapp.com",
+      "item": [
+        {
+          "href": "https://sectorflowapp.com",
+          "rel": "service-doc",
+          "type": "text/html"
+        },
+        {
+          "href": "https://sectorflowapp.com/support.html",
+          "rel": "service-doc",
+          "type": "text/html"
+        },
+        {
+          "href": "https://sectorflowapp.com/privacy.html",
+          "rel": "service-doc",
+          "type": "text/html"
+        },
+        {
+          "href": "https://sectorflowapp.com/terms.html",
+          "rel": "service-doc",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
 }

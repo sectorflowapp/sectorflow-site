@@ -1,4 +1,12 @@
 {
-  "version": "1.0",
-  "skills": []
+  "$schema": "https://agentskills.io/schemas/skills-index.schema.json",
+  "skills": [
+    {
+      "name": "SectorFlow Website",
+      "type": "documentation",
+      "description": "Information about SectorFlow aviation tools, pilot utilities, privacy policy, terms of use and support resources.",
+      "url": "https://sectorflowapp.com",
+      "sha256": "029686069cbd17ff37f6efc32283e5351e71c3ee79e4a4028a82f46de6ce9d08"
+    }
+  ]
 }
