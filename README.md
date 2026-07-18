@@ -1,6 +1,6 @@
-# SectorFlow — Website
+# About Flying — Website
 
-Landing page, support form, privacy policy, and terms page for [SectorFlow](https://sectorflowapp.com), an offline-first iPhone app for airline pilots.
+Landing page, support form, privacy policy, and terms page for [About Flying](https://sectorflowapp.com), an offline-first iPhone app for pilots.
 
 ## Structure
 
@@ -21,19 +21,20 @@ sectorflow-website/
 ├── README.md
 └── assets/
     └── screenshots/
-        ├── Logo.png                  # Official SectorFlow website logo
-        ├── crew_config.png           # Crew Rest — configuration screen
-        ├── crew_list.png             # Crew Rest — schedule list
-        ├── time_calc.png             # Time Calculator — duration mode
-        ├── timezone.png              # Time Calculator — time zone mode
-        └── splash.png               # App splash / launch screen
+        ├── Logo.png                  # Official About Flying website logo
+        ├── home.png                  # Current Home screen
+        ├── crew-rest.png             # Current Crew Rest screen
+        ├── sunrise-sunset.png        # Current Sunrise & Sunset screen
+        ├── time-tools.png            # Current Time Tools screen
+        ├── settings-about.png        # Current Settings / About screen
+        └── splash.png                # Current unchanged app launch screen
 ```
 
 ## Pages
 
 | Page | Description |
 |---|---|
-| `index.html` | Full landing page — Hero, Features, Coming Soon, Security, Contact |
+| `index.html` | Full landing page — Hero, shipping tools, app screens, privacy, and Contact |
 | `privacy.html` | Privacy policy page — suitable for linking from the App Store listing |
 | `support.html` | Public support information linking to the secure homepage support form |
 | `terms.html` | Terms of Use page |
@@ -48,6 +49,8 @@ This site is static HTML — no build step required. To go live:
 
 The root `CNAME` file must contain only `sectorflowapp.com`.
 
+`sectorflowapp.com` is the current public domain and remains in CNAME, canonical links, the support endpoint, and agent-readable metadata. `about-flying.com` is only a future migration candidate. A migration requires a separately reviewed DNS, redirect, canonical, endpoint, App Store metadata, and uptime plan before any current URL is changed.
+
 The support form is wired to `https://contact.sectorflowapp.com`. If the deployed Worker URL changes, update `CONTACT_WORKER_ENDPOINT` in `index.html` and the `.well-known/api-catalog` anchor together. The Worker should verify Cloudflare Turnstile server-side.
 
 The website may use Cloudflare Web Analytics, Turnstile, security, and performance services. The iPhone app is described separately from the website in the privacy policy.
@@ -56,7 +59,7 @@ The website may use Cloudflare Web Analytics, Turnstile, security, and performan
 
 The `.well-known` files intentionally describe only truthful public website capabilities. They do not advertise private app functionality, protected actions, or developer integrations.
 
-The following isitagentready.com items are intentionally not implemented because SectorFlow does not currently expose those capabilities:
+The following isitagentready.com items are intentionally not implemented because About Flying does not currently expose those capabilities:
 
 - OAuth/OIDC discovery
 - OAuth Protected Resource Metadata
