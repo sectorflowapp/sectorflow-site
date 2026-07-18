@@ -24,7 +24,6 @@ sectorflow-website/
         ├── Logo.png                  # Official SectorFlow website logo
         ├── crew_config.png           # Crew Rest — configuration screen
         ├── crew_list.png             # Crew Rest — schedule list
-        ├── prayer.png                # In-Flight Prayer Times
         ├── time_calc.png             # Time Calculator — duration mode
         ├── timezone.png              # Time Calculator — time zone mode
         └── splash.png               # App splash / launch screen
